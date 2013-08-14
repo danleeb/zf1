@@ -164,4 +164,25 @@ class Zend_Test_PHPUnit_Db_Metadata_Generic implements PHPUnit_Extensions_Databa
     {
         return false;
     }
+
+    /**
+     * Disables primary keys if rdbms does not allow setting them otherwise
+     *
+     * @param string $tableName
+     */
+    public function disablePrimaryKeys($tableName)
+    {
+        # XXX Nothing here
+    }
+
+    /**
+     * Reenables primary keys after they have been disabled
+     *
+     * @param string $tableName
+     */
+    public function enablePrimaryKeys($tableName)
+    {
+        # XXX Nothing here
+    }
+
 }

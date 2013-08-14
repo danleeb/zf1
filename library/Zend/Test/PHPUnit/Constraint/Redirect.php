@@ -102,8 +102,14 @@ class Zend_Test_PHPUnit_Constraint_Redirect extends PHPUnit_Framework_Constraint
      * @param  string $other String to examine
      * @param  null|string Assertion type
      * @return bool
+     * NOTE:
+     * Drastic changes up to PHPUnit 3.5.15 this was:
+     *     public function evaluate($other, $assertType = null)
+     * In PHPUnit 3.6.0 they changed the interface into this:
+     *     public function evaluate($other, $description = '', $returnResult = FALSE)
+     * We use the new interface for PHP-strict checking, but emulate the old one
      */
-    public function evaluate($other, $assertType = null)
+    public function evaluate($other, $assertType = null, $variable = FALSE)
     {
         if (!$other instanceof Zend_Controller_Response_Abstract) {
             require_once 'Zend/Test/PHPUnit/Constraint/Exception.php';
@@ -166,8 +172,14 @@ class Zend_Test_PHPUnit_Constraint_Redirect extends PHPUnit_Framework_Constraint
      * @param  bool $not
      * @return void
      * @throws PHPUnit_Framework_ExpectationFailedException
+     * NOTE:
+     * Drastic changes up to PHPUnit 3.5.15 this was:
+     *     public function fail($other, $description, $not = false)
+     * In PHPUnit 3.6.0 they changed the interface into this:
+     *     protected function fail($other, $description, PHPUnit_Framework_ComparisonFailure $comparisonFailure = NULL)
+     * We use the new interface for PHP-strict checking
      */
-    public function fail($other, $description, $not = false)
+    public function fail($other, $description, PHPUnit_Framework_ComparisonFailure $cannot_be_used = NULL)
     {
         require_once 'Zend/Test/PHPUnit/Constraint/Exception.php';
         switch ($this->_assertType) {
