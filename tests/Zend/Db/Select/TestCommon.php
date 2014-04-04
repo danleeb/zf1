@@ -15,7 +15,7 @@
  * @category   Zend
  * @package    Zend_Db
  * @subpackage UnitTests
- * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -34,7 +34,7 @@ require_once 'Zend/Db/TestSetup.php';
  * @category   Zend
  * @package    Zend_Db
  * @subpackage UnitTests
- * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
@@ -54,7 +54,7 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
     public function testSelect()
     {
         $select = $this->_select();
-        $this->assertType('Zend_Db_Select', $select,
+        $this->assertTrue($select instanceof Zend_Db_Select,
             'Expecting object of type Zend_Db_Select, got '.get_class($select));
         $stmt = $this->_db->query($select);
         $row = $stmt->fetch();
@@ -75,7 +75,7 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
     public function testSelectQuery()
     {
         $select = $this->_select();
-        $this->assertType('Zend_Db_Select', $select,
+        $this->assertTrue($select instanceof Zend_Db_Select,
             'Expecting object of type Zend_Db_Select, got '.get_class($select));
         $stmt = $select->query();
         $row = $stmt->fetch();
@@ -95,7 +95,7 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
         $select = $this->_select()->where("$product_id = :product_id")
                                   ->bind(array(':product_id' => 1));
 
-        $this->assertType('Zend_Db_Select', $select,
+        $this->assertTrue($select instanceof Zend_Db_Select,
             'Expecting object of type Zend_Db_Select, got '.get_class($select));
         $stmt = $select->query();
         $row = $stmt->fetch();
@@ -342,7 +342,7 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
                    ->columns('product_id');
             $this->fail('Expected exception of type "Zend_Db_Select_Exception"');
         } catch (Zend_Exception $e) {
-            $this->assertType('Zend_Db_Select_Exception', $e,
+            $this->assertTrue($e instanceof Zend_Db_Select_Exception,
                               'Expected exception of type "Zend_Db_Select_Exception", got ' . get_class($e));
             $this->assertEquals("No table has been specified for the FROM clause", $e->getMessage());
         }
@@ -630,7 +630,7 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
             $select->foo();
             $this->fail('Expected exception of type "Zend_Db_Select_Exception"');
         } catch (Zend_Exception $e) {
-            $this->assertType('Zend_Db_Select_Exception', $e,
+            $this->assertTrue($e instanceof Zend_Db_Select_Exception,
                               'Expected exception of type "Zend_Db_Select_Exception", got ' . get_class($e));
             $this->assertEquals("Unrecognized method 'foo()'", $e->getMessage());
         }
@@ -676,7 +676,7 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
             $select->joinFooUsing();
             $this->fail('Expected exception of type "Zend_Db_Select_Exception"');
         } catch (Zend_Exception $e) {
-            $this->assertType('Zend_Db_Select_Exception', $e,
+            $this->assertTrue($e instanceof Zend_Db_Select_Exception,
                               'Expected exception of type "Zend_Db_Select_Exception", got ' . get_class($e));
             $this->assertEquals("Unrecognized method 'joinFooUsing()'", $e->getMessage());
         }
@@ -702,7 +702,7 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
             $select->joinCrossUsing("zfbugs_products", "$product_id");
             $this->fail('Expected exception of type "Zend_Db_Select_Exception"');
         } catch (Zend_Exception $e) {
-            $this->assertType('Zend_Db_Select_Exception', $e,
+            $this->assertTrue($e instanceof Zend_Db_Select_Exception,
                               'Expected exception of type "Zend_Db_Select_Exception", got ' . get_class($e));
             $this->assertEquals("Cannot perform a joinUsing with method 'joinCrossUsing()'", $e->getMessage());
         }
@@ -858,7 +858,7 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
 
     public function testSelectWhereWithTypeFloat()
     {
-        $locale = setlocale(LC_ALL, null);
+        $locale = setlocale(LC_ALL, 0);
 
         $select = $this->_selectWhereWithTypeFloat();
         $stmt = $this->_db->query($select);
@@ -1695,9 +1695,9 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
         /* checks if the adapter has effectively gotten serialized,
            no exceptions are thrown here, so it's all right */
         $serialize = serialize($this->_select());
-        $this->assertType('string',$serialize);
+        $this->assertTrue(is_string($serialize));
     }
-    
+
     /**
      * @group ZF-3792
      */
@@ -1706,7 +1706,7 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
         $table_A = $this->_db->quoteTableAs('A');
         $table_B = $this->_db->quoteTableAs('B');
         $colname = $this->_db->quoteIdentifier('colname');
-        
+
         $s = $this->_db->select()->from('A')->joinUsing('B', $colname);
         $this->assertContains("JOIN {$table_B} ON {$table_B}.{$colname} = {$table_A}.{$colname}", $s->assemble());
     }
@@ -1720,7 +1720,7 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
         $table_B = $this->_db->quoteTableAs('B');
         $colOne  = $this->_db->quoteIdentifier('colOne');
         $colTwo  = $this->_db->quoteIdentifier('colTwo');
-        
+
         $s = $this->_db->select()->from('A')->joinUsing('B', array($colOne,$colTwo));
         $this->assertContains(
             "JOIN {$table_B} ON {$table_B}.{$colOne} = {$table_A}.{$colOne}"
@@ -1737,12 +1737,12 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
         $table1 = $this->_db->quoteTableAs('table1');
         $table2 = $this->_db->quoteTableAs('table2');
         $colname = $this->_db->quoteIdentifier('column1');
-        
+
         $select = $this->_db->select();
         $select->from('table1')->joinUsing('table2', $colname);
         $this->assertRegexp("/ON {$table2}.{$colname}/s", $select->assemble());
     }
-    
+
     /**
      * @group ZF-3309
      */
@@ -1751,10 +1751,10 @@ abstract class Zend_Db_Select_TestCommon extends Zend_Db_TestSetup
         $table1 = $this->_db->quoteTableAs('table1');
         $table2_alias = $this->_db->quoteTableAs('t2');
         $colname = $this->_db->quoteIdentifier('column1');
-        
+
         $select = $this->_db->select();
         $select->from('table1')->joinUsing(array('t2'=>'table2'), $colname);
         $this->assertRegexp("/ON {$table2_alias}.{$colname}/s", $select->assemble());
-    }    
-    
+    }
+
 }
